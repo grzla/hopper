@@ -12,6 +12,7 @@ import { renderToString } from 'react-dom/server'
 interface MapProps {
   center: [number, number]
   zoom: number
+  messages: any // Replace 'any' with the correct type for messages
 }
 
 // You'll need to add a default marker icon
@@ -33,9 +34,9 @@ const customIcon = new L.Icon({
   popupAnchor: [1, -34]
 })
 
-export default function Map({ center, zoom }: MapProps) {
-    return (
-      <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
+const Map: React.FC<MapProps> = ({ center, zoom, messages }) => {
+  return (
+    <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

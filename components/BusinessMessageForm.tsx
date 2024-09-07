@@ -14,8 +14,23 @@ export default function BusinessMessageForm({ onSubmitSuccess, onSubmitError }: 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement API call to save message
-    console.log('Submitting:', { message, latitude, longitude })
+    try {
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, latitude, longitude }),
+      })
+      if (response.ok) {
+        onSubmitSuccess()
+        setMessage('')
+        setLatitude('')
+        setLongitude('')
+      } else {
+        throw new Error('Failed to submit message')
+      }
+    } catch (error) {
+      onSubmitError(error instanceof Error ? error.message : 'An unknown error occurred')
+    }
   }
 
   return (
