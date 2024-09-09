@@ -49,3 +49,5 @@ const Map: React.FC<MapProps> = ({ center, zoom, messages }) => {
     </MapContainer>
   )
 }
+
+export default Map

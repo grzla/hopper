@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
-const MapComponent = dynamic(() => import('@/components/Map'), { ssr: false })
+const MapComponent = dynamic(() => import('@/components/Map').then(mod => mod.default), {
+  ssr: false,
+  loading: () => <p>Loading map...</p>,
+})
 
 export default function MapPage() {
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
-  const [messages, setMessages] = useState([])
+  const [userLocation, setUserLocation] = useState<[number, number] | null>([0,0])
+  const [messages, setMessages] = useState<{ id: string; text: string }[]>([])
 
   useEffect(() => {
     // Fetch user location
