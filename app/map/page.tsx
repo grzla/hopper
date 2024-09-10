@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-
-const MapComponent = dynamic(() => import('@/components/Map').then(mod => mod.default), {
-  ssr: false,
-  loading: () => <p>Loading map...</p>,
-})
+import Map from '@/components/Map'
+import { MessageMarkerProps } from '@/types/types'
+// const MapComponent = dynamic(() => import('@/components/Map').then(mod => mod.default), {
+//   ssr: false,
+//   loading: () => <p>Loading map...</p>,
+// })
 
 export default function MapPage() {
   const [userLocation, setUserLocation] = useState<[number, number] | null>([0,0])
-  const [messages, setMessages] = useState<{ id: string; text: string }[]>([])
+  const [messages, setMessages] = useState<MessageMarkerProps[]>([])
 
   useEffect(() => {
     // Fetch user location
@@ -25,15 +26,16 @@ export default function MapPage() {
 
     // Fetch messages
     fetch('/api/messages')
-      .then(response => response.json())
-      .then(data => setMessages(data))
-      .catch(error => console.error('Error fetching messages:', error))
+    .then(response => response.json())
+    .then(data => setMessages(data))
+    .catch(error => console.error('Error fetching messages:', error))
+    console.log(messages);
   }, [])
-
+  
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       {userLocation ? (
-        <MapComponent center={userLocation} zoom={15} messages={messages} />
+        <Map center={userLocation} zoom={15} messages={messages} />
       ) : (
         <p>Loading map...</p>
       )}

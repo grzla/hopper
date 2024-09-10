@@ -1,18 +1,10 @@
 import { Marker, Popup } from 'react-leaflet'
-import { Icon } from 'leaflet'
+import L, { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-
+import { renderToString } from 'react-dom/server'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import { MessageMarkerProps } from '@/types/types'
 // Define the props interface for the MessageMarker component
-interface MessageMarkerProps {
-  message: {
-    _id: string
-    content: string
-    location: {
-      coordinates: [number, number] // [longitude, latitude]
-    }
-    createdAt: string
-  }
-}
 
 // Create a custom icon for the marker
 const customIcon = new Icon({
@@ -22,12 +14,23 @@ const customIcon = new Icon({
   popupAnchor: [1, -34],
 })
 
+const createMarkerIcon = () => {
+  return L.divIcon({
+    html: renderToString(
+      <LocationOnIcon style={{ color: 'red', fontSize: 40, filter: 'drop-shadow(3px 3px 2px rgba(0,0,0,0.5))' }} />
+    ),
+    className: 'mui-marker',
+    iconSize: [50, 50],
+    iconAnchor: [25, 50],
+  })
+}
+
 export default function MessageMarker({ message }: MessageMarkerProps) {
   const { content, location, createdAt } = message
   const [longitude, latitude] = location.coordinates
 
   return (
-    <Marker position={[latitude, longitude]} icon={customIcon}>
+    <Marker position={[latitude, longitude]} icon={createMarkerIcon()}>
       <Popup>
         <div>
           <p className="font-bold mb-2">{content}</p>

@@ -1,6 +1,7 @@
 'use client'
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import MessageMarker from './MessageMarker'
 import 'leaflet/dist/leaflet.css'
 // import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
 // import 'leaflet-defaulticon-compatibility'
@@ -8,11 +9,12 @@ import L from 'leaflet'
 import IconDefault from 'leaflet'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import { renderToString } from 'react-dom/server'
+import { MessageMarkerProps } from '@/types/types'
 
 interface MapProps {
   center: [number, number]
   zoom: number
-  messages: any // Replace 'any' with the correct type for messages
+  messages: MessageMarkerProps[]
 }
 
 // You'll need to add a default marker icon
@@ -41,11 +43,10 @@ const Map: React.FC<MapProps> = ({ center, zoom, messages }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      <Marker position={center} icon={createMarkerIcon()}>
-        <Popup>
-          A sample message.
-        </Popup>
-      </Marker>
+
+      {messages.map((message) => (
+        <MessageMarker message={message} />
+      ))}
     </MapContainer>
   )
 }

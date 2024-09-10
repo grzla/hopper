@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import mongoose from 'mongoose'
 import Message from '@/models/Message'
+import { MessageMarkerProps } from '@/types/types'
 
 // Connect to MongoDB
 const connectDB = async () => {
@@ -25,12 +26,12 @@ export async function POST(request: Request) {
     }
 
     // Create new message
-    const newMessage = new Message({
+    const newMessage= new Message({
       content: message,
       location: {
         type: 'Point',
         coordinates: [longitude, latitude]
-      }
+      },
     })
 
     // Save message to database
