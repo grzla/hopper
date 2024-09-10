@@ -1,24 +1,19 @@
-'use client'
-
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import MessageMarker from './MessageMarker'
 import 'leaflet/dist/leaflet.css'
-// import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
-// import 'leaflet-defaulticon-compatibility'
 import L from 'leaflet'
-import IconDefault from 'leaflet'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import { renderToString } from 'react-dom/server'
 import { MessageMarkerProps } from '@/types/types'
 
+// Define the interface for MapProps
 interface MapProps {
   center: [number, number]
   zoom: number
   messages: MessageMarkerProps[]
 }
 
-// You'll need to add a default marker icon
-
+// Create a custom marker icon using MUI's LocationOnIcon
 const createMarkerIcon = () => {
   return L.divIcon({
     html: renderToString(
@@ -29,13 +24,8 @@ const createMarkerIcon = () => {
     iconAnchor: [25, 50],
   })
 }
-const customIcon = new L.Icon({
-  iconUrl: '@/node_modules/leaflet/src/images/marker.svg',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34]
-})
 
+// Define the Map component
 const Map: React.FC<MapProps> = ({ center, zoom, messages }) => {
   return (
     <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
@@ -45,7 +35,7 @@ const Map: React.FC<MapProps> = ({ center, zoom, messages }) => {
       />
 
       {messages.map((message) => (
-        <MessageMarker message={message} />
+        <MessageMarker message={message.message} />
       ))}
     </MapContainer>
   )

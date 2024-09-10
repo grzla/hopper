@@ -14,28 +14,38 @@ export default function MapPage() {
   const [messages, setMessages] = useState<MessageMarkerProps[]>([])
 
   useEffect(() => {
+    // Check if geolocation is available
+    if (!navigator.geolocation) {
+      console.error('Geolocation is not supported by this browser.');
+      return;
+    }
+
     // Fetch user location
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setUserLocation([position.coords.latitude, position.coords.longitude])
+        setUserLocation([position.coords.latitude, position.coords.longitude]);
       },
       (error) => {
-        console.error('Error getting location:', error)
+        console.error('Error getting location:', error);
+        // Optionally set a default location or handle the error
       }
-    )
+    );
 
     // Fetch messages
     fetch('/api/messages')
-    .then(response => response.json())
-    .then(data => setMessages(data))
-    .catch(error => console.error('Error fetching messages:', error))
-    console.log(messages);
+      .then(response => response.json())
+      .then(data => setMessages(data))
+      .catch(error => console.error('Error fetching messages:', error));
   }, [])
   
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       {userLocation ? (
-        <Map center={userLocation} zoom={15} messages={messages} />
+        <Map 
+          center={userLocation} 
+          zoom={15} 
+          messages={messages} 
+        />
       ) : (
         <p>Loading map...</p>
       )}
