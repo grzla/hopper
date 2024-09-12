@@ -27,15 +27,15 @@ const createMarkerIcon = () => {
 
 // Define the Map component
 const Map: React.FC<MapProps> = ({ center, zoom, messages }) => {
+  console.log('Messages in Map.tsx:', messages)
   return (
     <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-
-      {messages.map((message) => (
-        <MessageMarker message={message.message} />
+      {messages.map((message: MessageMarkerProps, index: number) => (
+        message && <MessageMarker key={index} message={message.message} />
       ))}
     </MapContainer>
   )

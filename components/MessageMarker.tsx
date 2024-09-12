@@ -25,11 +25,16 @@ const createMarkerIcon = () => {
   })
 }
 
-export default function MessageMarker({ message }: MessageMarkerProps) {
-  // Check if message is undefined
+// Check if the marker is being created correctly
+
+export default function MessageMarker({ message }: {message: MessageMarkerProps['message'] } ) {
   if (!message) {
-    return null; // or return a fallback UI
+    console.error('Invalid message object:', message);
+    return null; // Return nothing if message is undefined or improperly structured
   }
+  console.log('Message:', message);
+  // Check if message is undefined
+
   
   const { content, location, createdAt } = message
   const [longitude, latitude] = location.coordinates
