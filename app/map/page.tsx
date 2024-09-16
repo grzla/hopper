@@ -9,12 +9,15 @@ import { MessageMarkerProps } from '@/types/types'
 import { set } from 'mongoose';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 
+/*
 const getIconDataUrl = (IconComponent: React.ElementType, color: string = 'primary', size: number = 32) => {
   const iconString = ReactDOMServer.renderToString(
     <IconComponent style={{ color, fontSize: size }} />
   );
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(iconString)}`;
 };
+*/
+
 
 const containerStyle = {
   width: '100%',
@@ -97,11 +100,15 @@ const MapPage = () => {
         >
           {mapLoaded && window.google && window.google.maps && messages.map((message) => (
             <Marker
-              key={message.message._id}
-              position={{ lat: (message.message.location.coordinates[1]), lng: (message.message.location.coordinates[0]) }}
+              key={message._id}
+              position={{ 
+                lat: (message.location.coordinates[1] || 0), 
+                lng: (message.location.coordinates[0] || 0) 
+              }}
               onClick={() => handleMarkerClick(message)}
               icon={{
-                url: getIconDataUrl(MyLocationIcon),
+                // url: getIconDataUrl(MyLocationIcon),
+                url: '/images/icon.png',
                 scaledSize: new window.google.maps.Size(32, 32),
               }}
             />
@@ -109,11 +116,14 @@ const MapPage = () => {
           {selectedMessage && (
             <InfoWindow
 
-              position={{ lat: (selectedMessage.message.location.coordinates[1]), lng: (selectedMessage.message.location.coordinates[0]) }}
+              position={{ 
+                lat: (selectedMessage.location.coordinates[1] || 0), 
+                lng: (selectedMessage.location.coordinates[0] || 0)
+              }}
               onCloseClick={() => setSelectedMessage(null)}
             >
               <div className='text-slate-800'>
-                <h2 className="text-lg">{selectedMessage.message.content}</h2>
+                <h2 className="text-lg">{selectedMessage.content}</h2>
               </div>
             </InfoWindow>
           )}
@@ -122,3 +132,5 @@ const MapPage = () => {
     </div>
   )
 }
+
+export default MapPage;
