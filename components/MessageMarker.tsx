@@ -27,7 +27,7 @@ const createMarkerIcon = () => {
 
 // Check if the marker is being created correctly
 
-export default function MessageMarker({ message }: {message: MessageMarkerProps['message'] } ) {
+export default function MessageMarker({ message }: {message: MessageMarkerProps } ) {
   if (!message) {
     console.error('Invalid message object:', message);
     return null; // Return nothing if message is undefined or improperly structured

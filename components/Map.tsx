@@ -35,7 +35,7 @@ const Map: React.FC<MapProps> = ({ center, zoom, messages }) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       {messages.map((message: MessageMarkerProps, index: number) => (
-        message && <MessageMarker key={index} message={message.message} />
+        message && <MessageMarker key={index} message={message} />
       ))}
     </MapContainer>
   )
