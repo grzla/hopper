@@ -9,22 +9,32 @@ interface BusinessMessageFormProps {
 
 export default function BusinessMessageForm({ onSubmitSuccess, onSubmitError }: BusinessMessageFormProps) {
   const [message, setMessage] = useState('')
-  const [latitude, setLatitude] = useState('')
-  const [longitude, setLongitude] = useState('')
+  const [address, setAddress] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      // Fetch coordinates from Google's Geocoding API
+      const geocodeResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`)
+      const geocodeData = await geocodeResponse.json()
+
+      if (geocodeData.status !== 'OK') {
+        throw new Error('Failed to fetch coordinates')
+      }
+
+      const { lat, lng } = geocodeData.results[0].geometry.location
+
+      // Submit the form with the retrieved coordinates
       const response = await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, latitude, longitude }),
+        body: JSON.stringify({ message, latitude: lat, longitude: lng }),
       })
+
       if (response.ok) {
         onSubmitSuccess()
         setMessage('')
-        setLatitude('')
-        setLongitude('')
+        setAddress('')
       } else {
         throw new Error('Failed to submit message')
       }
@@ -46,23 +56,12 @@ export default function BusinessMessageForm({ onSubmitSuccess, onSubmitError }: 
         />
       </div>
       <div>
-        <label htmlFor="latitude" className="block mb-2">Latitude:</label>
+        <label htmlFor="address" className="block mb-2">Address:</label>
         <input
-          type="number"
-          id="latitude"
-          value={latitude}
-          onChange={(e) => setLatitude(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="longitude" className="block mb-2">Longitude:</label>
-        <input
-          type="number"
-          id="longitude"
-          value={longitude}
-          onChange={(e) => setLongitude(e.target.value)}
+          type="text"
+          id="address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
           className="w-full p-2 border rounded"
           required
         />
