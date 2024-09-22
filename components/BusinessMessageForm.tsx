@@ -10,6 +10,10 @@ interface BusinessMessageFormProps {
 export default function BusinessMessageForm({ onSubmitSuccess, onSubmitError }: BusinessMessageFormProps) {
   const [message, setMessage] = useState('')
   const [address, setAddress] = useState('')
+  const [showWithinMiles, setShowWithinMiles] = useState(false)
+  const [miles, setMiles] = useState('')
+  const [showToUsers, setShowToUsers] = useState(false)
+  const [times, setTimes] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,13 +32,23 @@ export default function BusinessMessageForm({ onSubmitSuccess, onSubmitError }: 
       const response = await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, latitude: lat, longitude: lng }),
+        body: JSON.stringify({ 
+          message, 
+          latitude: lat, 
+          longitude: lng,
+          showWithinMiles: showWithinMiles ? miles : null,
+          showToUsers: showToUsers ? times : null,
+        }),
       })
 
       if (response.ok) {
         onSubmitSuccess()
         setMessage('')
         setAddress('')
+        setShowWithinMiles(false)
+        setMiles('')
+        setShowToUsers(false)
+        setTimes('')
       } else {
         throw new Error('Failed to submit message')
       }
@@ -66,7 +80,49 @@ export default function BusinessMessageForm({ onSubmitSuccess, onSubmitError }: 
           required
         />
       </div>
-      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      <div>
+        <label className="block mb-2">
+          <input
+            type="checkbox"
+            checked={showWithinMiles}
+            onChange={(e) => setShowWithinMiles(e.target.checked)}
+            className="mr-2"
+          />
+          Only show within
+        </label>
+        {showWithinMiles && (
+          <input
+            type="number"
+            value={miles}
+            onChange={(e) => setMiles(e.target.value)}
+            className="w-full p-2 border rounded"
+            placeholder="Enter miles"
+            required
+          />
+        )}
+      </div>
+      <div>
+        <label className="block mb-2">
+          <input
+            type="checkbox"
+            checked={showToUsers}
+            onChange={(e) => setShowToUsers(e.target.checked)}
+            className="mr-2"
+          />
+          Only show to users who have been here
+        </label>
+        {showToUsers && (
+          <input
+            type="number"
+            value={times}
+            onChange={(e) => setTimes(e.target.value)}
+            className="w-full p-2 border rounded"
+            placeholder="Enter times"
+            required
+          />
+        )}
+      </div>
+      <button type="submit" className="px-4 py-2 bg-hey-red  text-white rounded hover:bg-hey-red">
         Submit Message
       </button>
     </form>
