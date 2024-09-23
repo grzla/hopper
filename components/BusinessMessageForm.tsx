@@ -16,23 +16,33 @@ const BusinessMessageForm = ({ onSubmitSuccess, onSubmitError }: BusinessMessage
   const [times, setTimes] = useState('')
   const [sponsor, setSponsor] = useState('')
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
+
+      // Fetch coordinates from Google's Geocoding API
+      const geocodeResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`)
+      const geocodeData = await geocodeResponse.json()
+      if (geocodeData.status !== 'OK') {
+        throw new Error('Failed to fetch coordinates')
+      }
+      const { lat, lng } = geocodeData.results[0].geometry.location
+
       const response = await fetch('/api/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message,
-          address,
-          showWithinMiles,
-          miles,
-          showToUsers,
-          times,
           sponsor,
+          message,
+          latitude: lat,
+          longitude: lng
+          // showWithinMiles,
+          // miles,
+          // showToUsers,
+          // times,
         }),
       })
 
