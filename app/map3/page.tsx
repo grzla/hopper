@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Map from '@/components/Map'
 import { MessageMarkerProps } from '@/types/types'
+import { fetchMessages } from '../utils/api'
 
 const MapComponent = dynamic(() => import('@/components/Map').then(mod => mod.default), {
   ssr: false,

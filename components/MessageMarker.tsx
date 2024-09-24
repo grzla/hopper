@@ -36,13 +36,14 @@ export default function MessageMarker({ message }: {message: MessageMarkerProps 
   // Check if message is undefined
 
   
-  const { content, location, createdAt } = message
+  const { sponsor, content, location, createdAt } = message
   const [longitude, latitude] = location.coordinates
 
   return (
     <Marker position={[latitude, longitude]} icon={createMarkerIcon()}>
       <Popup>
         <div>
+          <p className="font-bold bg-hey-red mb-2 ">{sponsor}</p>
           <p className="font-bold mb-2">{content}</p>
           <p className="text-sm text-gray-500">
             Posted on: {new Date(createdAt).toLocaleString()}

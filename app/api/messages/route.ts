@@ -18,15 +18,20 @@ export async function POST(request: Request) {
   await connectDB()
 
   try {
-    const { message, latitude, longitude } = await request.json()
+    const { sponsor, message, latitude, longitude } = await request.json()
+
+    // Log the received data
+    console.log('Received data:', { sponsor, message, latitude, longitude })
 
     // Validate input
     if (!message || !latitude || !longitude) {
+      console.error('Validation error: Missing required fields', { message, latitude, longitude })
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Create new message
-    const newMessage= new Message({
+    const newMessage = new Message({
+      sponsor: sponsor,
       content: message,
       location: {
         type: 'Point',

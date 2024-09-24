@@ -12,6 +12,12 @@ interface IMessage extends Document {
 
 // Define the schema for the Message model
 const MessageSchema: Schema = new Schema({
+  sponsor: {
+    type: String,
+    trim: true,
+    maxlength: [50, 'Message sponsor cannot be more than 50 characters'],
+    required: [true, 'Message sponsor is required']
+  },
   content: {
     type: String,
     required: [true, 'Message content is required'],
