@@ -89,7 +89,7 @@ const MapPage = () => {
 
       {!mapLoaded && <p>Loading map...</p>}
       <LoadScriptNext
-        googleMapsApiKey={process.env.GOOGLE_MAPS_API_KEY || ''}
+        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}
         loadingElement={<div>Loading...</div>}
         onLoad={() => setMapLoaded(true)}
       >
