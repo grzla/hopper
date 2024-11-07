@@ -1,53 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import ReactDOMServer from 'react-dom/server';
+import { useState, useEffect } from 'react';
 import { GoogleMap, LoadScriptNext, Marker, InfoWindow } from '@react-google-maps/api';
-// import dynamic from 'next/dynamic'
-// import Map from '@/components/Map'
-import { MessageMarkerProps } from '@/types/types'
-import { set } from 'mongoose';
-import MyLocationIcon from '@mui/icons-material/MyLocation';
-
-/*
-const getIconDataUrl = (IconComponent: React.ElementType, color: string = 'primary', size: number = 32) => {
-  const iconString = ReactDOMServer.renderToString(
-    <IconComponent style={{ color, fontSize: size }} />
-  );
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(iconString)}`;
-};
-*/
-
+import { MessageMarkerProps, MapLayerProps } from '@/types/types';
 
 const containerStyle = {
   width: '100%',
-  height: '100vh',
+  height: '80vh',
 };
-
-const center = {
-  lat: 41.824,
-  lng: -71.4128,
-};
-
-/*
-const MapComponent = dynamic(() => import('@/components/Map').then(mod => mod.default), {
-  ssr: false,
-  loading: () => <p>Loading map...</p>,
-})
-*/
 
 const MapPage = () => {
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
-  const [messages, setMessages] = useState<MessageMarkerProps[]>([])
-  const [selectedMessage, setSelectedMessage] = useState<MessageMarkerProps | null>(null)
-  const [mapLoaded, setMapLoaded] = useState(false)
+  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
+  const [messages, setMessages] = useState<MessageMarkerProps[]>([]);
+  const [selectedMessage, setSelectedMessage] = useState<MessageMarkerProps | null>(null);
+  const [subscribedMapLayers, setSubscribedMapLayers] = useState<MapLayerProps[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // Fetch user location
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserLocation([position.coords.latitude, position.coords.longitude]);
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -58,79 +34,120 @@ const MapPage = () => {
       fetch('/api/messages')
         .then(response => response.json())
         .then(data => {
-          console.log('Messages from endpoint:', data)
-          setMessages(data)
+          console.log('Messages from endpoint:', data);
+          setMessages(data);
         })
         .catch(error => console.error('Error fetching messages:', error));
+
+      // Fetch subscribed map layers
+      fetch('/api/map-layers/subscribed')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Subscribed map layers:', data);
+          if (Array.isArray(data)) {
+            setSubscribedMapLayers(data);
+          } else {
+            console.error('Subscribed map layers data is not an array:', data);
+          }
+        })
+        .catch(error => console.error('Error fetching subscribed map layers:', error));
     }
-  }, [])
+  }, []);
 
   const handleMarkerClick = (message: MessageMarkerProps) => {
+    console.log('Marker clicked:', message)
     setSelectedMessage(message);
-  }
+  };
 
+  const handleSubscribe = async (mapLayerId: string) => {
+    try {
+      const response = await fetch('/api/map-layers/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mapLayerId }),
+      });
 
-  /*
-  <div style={{ height: '100vh', width: '100%' }}>
-    {userLocation ? (
-      <MapComponent 
-        center={userLocation} 
-        zoom={15} 
-        messages={messages} 
-      />
-    ) : (
-      <p>Loading map...</p>
-    )}
-  </div>
-  */
+      if (response.ok) {
+        // Refresh subscribed map layers
+        fetch('/api/map-layers/subscribed')
+          .then(response => response.json())
+          .then(data => {
+            console.log('Subscribed map layers:', data);
+            if (Array.isArray(data)) {
+              setSubscribedMapLayers(data);
+            } else {
+              console.error('Subscribed map layers data is not an array:', data);
+            }
+          })
+          .catch(error => console.error('Error fetching subscribed map layers:', error));
+      } else {
+        console.error('Error subscribing to map layer');
+      }
+    } catch (error) {
+      console.error('Error subscribing to map layer:', error);
+    }
+  };
 
   return (
     <div>
-
-      {!mapLoaded && <p>Loading map...</p>}
       <LoadScriptNext
         googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}
         loadingElement={<div>Loading...</div>}
-        onLoad={() => setMapLoaded(true)}
       >
         <GoogleMap
           mapContainerStyle={containerStyle}
-          center={center}
-          zoom={13}
+          center={userLocation || undefined}
+          zoom={userLocation ? 15 : 10}
         >
-          {mapLoaded && window.google && window.google.maps && messages.map((message) => (
+          {messages.map((message) => (
             <Marker
               key={message._id}
-              position={{ 
-                lat: (message.location.coordinates[1] || 0), 
-                lng: (message.location.coordinates[0] || 0) 
+              position={{
+                lat: message.location.coordinates[1] || 0,
+                lng: message.location.coordinates[0] || 0,
               }}
               onClick={() => handleMarkerClick(message)}
               icon={{
-                // url: getIconDataUrl(MyLocationIcon),
                 url: '/images/icon.png',
                 scaledSize: new window.google.maps.Size(32, 32),
               }}
             />
           ))}
-          {selectedMessage && (
-            <InfoWindow
-
-              position={{ 
-                lat: (selectedMessage.location.coordinates[1] || 0), 
-                lng: (selectedMessage.location.coordinates[0] || 0)
-              }}
-              onCloseClick={() => setSelectedMessage(null)}
-            >
-              <div className='text-slate-800'>
-                <h2 className="text-lg">{selectedMessage.content}</h2>
-              </div>
-            </InfoWindow>
-          )}
         </GoogleMap>
       </LoadScriptNext>
+       {selectedMessage && (
+        <>
+          {console.log('Rendering InfoWindow for:', selectedMessage)}
+          <InfoWindow
+            
+            position={{
+              lat: selectedMessage.location.coordinates[1] || 0,
+              lng: selectedMessage.location.coordinates[0] || 0,
+            }}
+            onCloseClick={() => setSelectedMessage(null)}
+          >
+            <div className='text-slate-800'>
+              <h2 className="text-lg">{selectedMessage.content}</h2>
+              </div>
+          </InfoWindow>
+        </>
+      )}
+       <div className="map-layers" style={{zIndex: 1000, position: 'relative'}}>
+        <h2>Subscribed Map Layers</h2>
+        {subscribedMapLayers.map((layer) => (
+          <div key={layer._id} className="map-layer">
+            <h3>{layer.name}</h3>
+            <p>{layer.description}</p>
+            <button onClick={() => handleSubscribe(layer._id)}>
+              Subscribe
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default MapPage;

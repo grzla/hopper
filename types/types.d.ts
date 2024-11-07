@@ -7,3 +7,20 @@ export type MessageMarkerProps = {
   }
   createdAt: string
 }
+
+export type MapLayerProps = {
+  _id: string
+  name: string
+  description: string
+  userId: {
+    _id: string
+    email: string
+  }
+  locationCoordinates?: number[][]
+  googleMapsPlaceId?: string
+  gpsCoordinates?: {
+    type: 'Polygon'
+    coordinates: number[][][]
+  }
+  likedBy: string[]
+}
