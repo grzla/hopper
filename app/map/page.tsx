@@ -9,6 +9,12 @@ const containerStyle = {
   height: '80vh',
 };
 
+const infoWindowOptions = {
+  closeBoxURL: '',
+  pixelOffset: new window.google.maps.Size(0, -30),
+  disableAutoPan: false
+}
+
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [messages, setMessages] = useState<MessageMarkerProps[]>([]);
@@ -90,6 +96,13 @@ const MapPage = () => {
     }
   };
 
+  const handleMapClick = () => {
+    // close the info window when clicking anywhere on the map
+    if (selectedMessage) {
+      setSelectedMessage(null)
+    }
+  }
+
   return (
     <div>
       <LoadScriptNext
@@ -100,6 +113,8 @@ const MapPage = () => {
           mapContainerStyle={containerStyle}
           center={userLocation || undefined}
           zoom={userLocation ? 15 : 10}
+          onClick={handleMapClick}
+          clickableIcons={false}
         >
           {messages.map((message) => (
             <Marker
@@ -110,7 +125,7 @@ const MapPage = () => {
               }}
               onClick={() => handleMarkerClick(message)}
               icon={{
-                url: '/images/icon.png',
+                url: '/images/map-marker.svg',
                 scaledSize: new window.google.maps.Size(32, 32),
               }}
             />
@@ -122,6 +137,7 @@ const MapPage = () => {
                 lng: selectedMessage.location.coordinates[0] || 0,
               }}
               onCloseClick={() => setSelectedMessage(null)}
+              options={infoWindowOptions}
             >
               <div className='text-slate-800'>
                 <h2 className="text-lg">{selectedMessage.content}</h2>

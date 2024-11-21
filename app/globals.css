@@ -63,3 +63,18 @@ body {
   z-index: 1; /* Set a lower zIndex for the GoogleMap container */
   position: relative;
 }
+
+/* hide the InfoWindow close button */
+.gm-style-iw button[title="Close"] {
+  display: none !important
+}
+
+/* optionally remove the default InfoWindow padding if needed */
+.gm-style-iw {
+  padding: 3 !important
+}
+
+/* remove the default InfoWindow tail/arrow if desired */
+.gm-style-iw-tc {
+  display: none !important
+}
