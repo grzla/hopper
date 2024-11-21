@@ -1,0 +1,30 @@
+UI for curating map layers: Consider use cases
+ - User wants to curate a list of the best pizza restaurants
+ - Band wants to list their upcoming show
+ - RISCA wants to share points of interest for PVDFest
+
+ - What's new in the neighborhood algorithm
+
+
+ - drop marker -> fill in info
+ - import from api
+
+UI for businesses (speak on the map)
+ - Anything a business posts will be visible on the map regardless of active layers - but the user can hide them. ("Only show my layers")
+ - zillow-style location targeting of users (geofence) 
+
+What is a "Hey Therr"?
+ - a heytherr is a message from a business to the neighborhood/public
+ - temporary heytherrs can be targeted to specific locations/days/times
+ - businesses can create heytherrs
+ - curators can create heytherrs for businesses
+ - businesses can delete/disable curators heytherrs 
+
+
+
+Revamp types. Include expiration date
+
+Implement Layers
+
+Implement UI
+

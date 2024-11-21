@@ -114,7 +114,7 @@ const MapPage = () => {
           center={userLocation || undefined}
           zoom={userLocation ? 15 : 10}
           onClick={handleMapClick}
-          clickableIcons={false}
+          clickableIcons={false} // disable google POI icons
         >
           {messages.map((message) => (
             <Marker
