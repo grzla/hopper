@@ -115,26 +115,22 @@ const MapPage = () => {
               }}
             />
           ))}
+          {selectedMessage && (
+            <InfoWindow
+              position={{
+                lat: selectedMessage.location.coordinates[1] || 0,
+                lng: selectedMessage.location.coordinates[0] || 0,
+              }}
+              onCloseClick={() => setSelectedMessage(null)}
+            >
+              <div className='text-slate-800'>
+                <h2 className="text-lg">{selectedMessage.content}</h2>
+              </div>
+            </InfoWindow>
+          )}
         </GoogleMap>
       </LoadScriptNext>
-       {selectedMessage && (
-        <>
-          {console.log('Rendering InfoWindow for:', selectedMessage)}
-          <InfoWindow
-            
-            position={{
-              lat: selectedMessage.location.coordinates[1] || 0,
-              lng: selectedMessage.location.coordinates[0] || 0,
-            }}
-            onCloseClick={() => setSelectedMessage(null)}
-          >
-            <div className='text-slate-800'>
-              <h2 className="text-lg">{selectedMessage.content}</h2>
-              </div>
-          </InfoWindow>
-        </>
-      )}
-       <div className="map-layers" style={{zIndex: 1000, position: 'relative'}}>
+      <div className="map-layers" style={{zIndex: 1000, position: 'relative'}}>
         <h2>Subscribed Map Layers</h2>
         {subscribedMapLayers.map((layer) => (
           <div key={layer._id} className="map-layer">
