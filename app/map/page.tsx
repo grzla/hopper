@@ -9,17 +9,12 @@ const containerStyle = {
   height: '80vh',
 };
 
-const infoWindowOptions = {
-  closeBoxURL: '',
-  pixelOffset: new window.google.maps.Size(0, -30),
-  disableAutoPan: false
-}
-
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [messages, setMessages] = useState<MessageMarkerProps[]>([]);
   const [selectedMessage, setSelectedMessage] = useState<MessageMarkerProps | null>(null);
   const [subscribedMapLayers, setSubscribedMapLayers] = useState<MapLayerProps[]>([]);
+  const [infoWindowOptions, setInfoWindowOptions] = useState(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -59,6 +54,17 @@ const MapPage = () => {
         .catch(error => console.error('Error fetching subscribed map layers:', error));
     }
   }, []);
+
+  useEffect(() => {
+    // only set options after google maps is loaded
+    if (window.google) {
+      setInfoWindowOptions({
+        closeBoxURL: '',
+        pixelOffset: new window.google.maps.Size(0, -30),
+        disableAutoPan: false
+      })
+    }
+  }, [])
 
   const handleMarkerClick = (message: MessageMarkerProps) => {
     console.log('Marker clicked:', message)

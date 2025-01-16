@@ -1,4 +1,8 @@
-UI for curating map layers: Consider use cases
+Base functionality for curators
+ - Add/delete/edit markers/content
+ - Select geofenced area to target users (zillow style)
+ 
+ UI for curating map layers: Consider use cases
  - User wants to curate a list of the best pizza restaurants
  - Band wants to list their upcoming show
  - RISCA wants to share points of interest for PVDFest
@@ -19,6 +23,38 @@ What is a "Hey Therr"?
  - businesses can create heytherrs
  - curators can create heytherrs for businesses
  - businesses can delete/disable curators heytherrs 
+
+User stories
+ - User wants to know what's new in the neighborhood
+ - User wants to know what's happening in their neighborhood
+ - User wants to know what's happening in a specific neighborhood
+ - User wants to know what's happening in a specific neighborhood on a specific day/time
+
+Curator stories
+ - Curator wants to share a heytherr with the neighborhood
+ - Curator wants to share a heytherr with a specific group of people
+ - Curator wants to share a heytherr with a specific location on a specific day/time
+
+How does a curator create a layer?
+ - Curator selects a business from Google POI
+ - or Right click (or hold) on the map to drop a marker
+    - Right click (or hold) on the marker to edit content
+
+
+How would RISCA curate the PVDFest layer? (manual)
+ - Draw a polygon on the map encompassing the PVDFest area - this is the geofence for users who will see the layer
+ - Configure the layer to show on specific days/times
+ - Drop markers at each of the PVDFest stages
+ - For each day, add content (schedule/link, artist links, etc) to each marker
+ - Copy marker to all other days
+ - Add content (schedule/link, artist links, etc) to each marker
+ - Add/delete/edit markers per day
+
+How would RISCA curate the PVDFest layer? (automatic)
+ - Provide JSON of Locations (addresses), times, content
+
+
+
 
 
 
